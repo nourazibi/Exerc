@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
+from mongo_saver import save_multiple_articles
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
@@ -87,3 +88,17 @@ if __name__ == "__main__":
 
     with open('articles_bdm.json', 'w', encoding='utf-8') as f:
         json.dump(articles, f, ensure_ascii=False, indent=2)
+
+
+if __name__ == "__main__":
+    articles = scrape_homepage_articles()
+
+    for art in articles:
+        print(f"✅ {art['title']} — {art['sub_category']} ({art['date']})")
+
+    # Sauvegarde JSON locale
+    with open('articles_bdm.json', 'w', encoding='utf-8') as f:
+        json.dump(articles, f, ensure_ascii=False, indent=2)
+
+    # Sauvegarde dans MongoDB
+    save_multiple_articles(articles)
